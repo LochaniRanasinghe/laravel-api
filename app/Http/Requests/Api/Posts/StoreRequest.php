@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'body' => 'required|string',
-            'author_id' => 'required|integer|exists:users,id',
+            // 'author_id' => 'required|integer|exists:users,id',
         ];
     }
 
@@ -36,9 +36,9 @@ class StoreRequest extends FormRequest
             'title.max' => 'The title may not be greater than 255 characters.',
             'body.required' => 'The body field is required.',
             'body.string' => 'The body must be a string.',
-            'author_id.required' => 'The author ID field is required.',
-            'author_id.integer' => 'The author ID must be an integer.',
-            'author_id.exists' => 'The selected author ID is invalid.',
+            // 'author_id.required' => 'The author ID field is required.',
+            // 'author_id.integer' => 'The author ID must be an integer.',
+            // 'author_id.exists' => 'The selected author ID is invalid.',
         ];
     }
 }

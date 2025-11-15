@@ -24,7 +24,6 @@ class UpdateRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'body' => 'required|string',
-            'author_id' => 'required|integer|exists:users,id',
         ];
     }
 }

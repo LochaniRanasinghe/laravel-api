@@ -9,15 +9,18 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PostResource::collection(Post::with('author')->paginate());
+        $user = $request->user();
+        $posts = $user->posts()->with('author')->paginate();
+        return PostResource::collection($posts);
     }
 
     /**
@@ -26,6 +29,7 @@ class PostController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
+        $data['author_id'] = $request->user()->id;
         
         $post = Post::create($data);
         
@@ -37,19 +41,17 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return response()->json(new PostResource($post));
+        abort_if(Auth::id() !== $post->author_id, 403, 'Unauthorized, Only the author can view this post');
+        return new PostResource($post);
     }
-    // public function show(string $id)
-    // {
-    //     $post = Post::findOrFail($id);
-    //     return response()->json($post);
-    // }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateRequest $request, Post $post)
     {
+        abort_if(Auth::id() !== $post->author_id, 403, 'Unauthorized, Only the author can view this post');
+
         $data = $request->validated();
         
         
@@ -63,6 +65,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        abort_if(Auth::id() !== $post->author_id, 403, 'Unauthorized, Only the author can view this post');
+
         $post->delete();
         return response()->json(['message' => 'Post deleted successfully'], 200);
     }
